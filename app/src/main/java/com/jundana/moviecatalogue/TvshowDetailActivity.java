@@ -13,6 +13,9 @@ import com.jundana.moviecatalogue.model.Tvshow;
 
 import java.util.Objects;
 
+import static com.jundana.moviecatalogue.adapter.TvshowsAdapter.DATA_TVSHOW_PARCELABLE;
+import static com.jundana.moviecatalogue.helper.UtilsApi.PHOTO_URL;
+
 public class TvshowDetailActivity extends AppCompatActivity {
 
     @Override
@@ -24,16 +27,14 @@ public class TvshowDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        Tvshow getTvshow = intent.getParcelableExtra("MOVIE");
-        String tvshowName = Objects.requireNonNull(getTvshow).getTvShowName();
-        Objects.requireNonNull(getSupportActionBar()).setTitle(tvshowName);
-
+        Tvshow tvshow = intent.getParcelableExtra(DATA_TVSHOW_PARCELABLE);
         ImageView imgPhoto = findViewById(R.id.imageView);
         TextView tvItemDetail = findViewById(R.id.tv_item_detail);
 
-        String tvshowDetail = getTvshow.getTvShowDetail();
-        int photo = Objects.requireNonNull(getTvshow).getPhoto();
+        Objects.requireNonNull(getSupportActionBar()).setTitle(Objects.requireNonNull(tvshow).getTvShowName());
+
+        String photo = PHOTO_URL + tvshow.getPhoto();
         Glide.with(this).load(photo).into(imgPhoto);
-        tvItemDetail.setText(tvshowDetail);
+        tvItemDetail.setText(tvshow.getTvShowDetail());
     }
 }

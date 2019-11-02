@@ -4,15 +4,24 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Tvshow implements Parcelable {
-    private int photo;
+    private int id;
+    private String photo;
     private String tvShowName;
     private String tvShowDetail;
 
-    public int getPhoto() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(int photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
@@ -39,7 +48,8 @@ public class Tvshow implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.photo);
+        dest.writeInt(this.id);
+        dest.writeString(this.photo);
         dest.writeString(this.tvShowName);
         dest.writeString(this.tvShowDetail);
     }
@@ -49,7 +59,8 @@ public class Tvshow implements Parcelable {
     }
 
     private Tvshow(Parcel in) {
-        this.photo = in.readInt();
+        this.id = in.readInt();
+        this.photo = in.readString();
         this.tvShowName = in.readString();
         this.tvShowDetail = in.readString();
     }

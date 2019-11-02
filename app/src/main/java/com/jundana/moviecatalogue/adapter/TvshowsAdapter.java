@@ -18,10 +18,15 @@ import com.jundana.moviecatalogue.TvshowDetailActivity;
 import com.jundana.moviecatalogue.model.Tvshow;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static com.jundana.moviecatalogue.helper.UtilsApi.PHOTO_URL;
 
 public class TvshowsAdapter extends RecyclerView.Adapter<TvshowsAdapter.ListViewHolder> {
+    public static final String DATA_TVSHOW_PARCELABLE = "data_tvshow";
+
     private Context mCtx;
-    private ArrayList<Tvshow> listTvShow;
+    private List<Tvshow> listTvShow;
 
     public TvshowsAdapter(Context context, ArrayList<Tvshow> list) {
         this.mCtx = context;
@@ -39,7 +44,7 @@ public class TvshowsAdapter extends RecyclerView.Adapter<TvshowsAdapter.ListView
     public void onBindViewHolder(TvshowsAdapter.ListViewHolder listViewHolder, int position) {
         Tvshow tvshows = listTvShow.get(position);
         Glide.with(listViewHolder.itemView.getContext())
-                .load(tvshows.getPhoto())
+                .load(PHOTO_URL + tvshows.getPhoto())
                 .apply(new RequestOptions().override(55, 55))
                 .into(listViewHolder.imgPhoto);
         listViewHolder.tvItemName.setText(tvshows.getTvShowName());
@@ -65,9 +70,13 @@ public class TvshowsAdapter extends RecyclerView.Adapter<TvshowsAdapter.ListView
 
         @Override
         public void onClick(View v) {
-            Tvshow tvshow = listTvShow.get(getAdapterPosition());
+            int position = getAdapterPosition();
+            Tvshow tvshow = listTvShow.get(position);
+            tvshow.setId(tvshow.getId());
+            tvshow.setTvShowName(tvshow.getTvShowName());
+            tvshow.setTvShowDetail(tvshow.getTvShowDetail());
             Intent intent = new Intent(mCtx, TvshowDetailActivity.class);
-            intent.putExtra("MOVIE", tvshow);
+            intent.putExtra(DATA_TVSHOW_PARCELABLE, tvshow);
             mCtx.startActivity(intent);
         }
     }
