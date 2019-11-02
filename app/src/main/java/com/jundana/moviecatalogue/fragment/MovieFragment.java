@@ -48,6 +48,7 @@ public class MovieFragment extends Fragment {
         rvMovies = view.findViewById(R.id.rv_movie);
 
         if (savedInstanceState == null) {
+            list = new ArrayList<>();
             showRecyclerList();
         } else {
             list = savedInstanceState.getParcelableArrayList(DATA_MOVIE_PARCELABLE);
