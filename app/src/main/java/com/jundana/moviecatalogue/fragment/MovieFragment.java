@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.WanderingCubes;
 import com.jundana.moviecatalogue.R;
 import com.jundana.moviecatalogue.adapter.MovieAdapter;
 import com.jundana.moviecatalogue.helper.BaseApiService;
@@ -34,25 +37,30 @@ import static com.jundana.moviecatalogue.adapter.MovieAdapter.DATA_MOVIE_PARCELA
 import static com.jundana.moviecatalogue.helper.UtilsApi.api_key;
 
 public class MovieFragment extends Fragment {
-
     private RecyclerView rvMovies;
     private BaseApiService mApiService;
 
     private ArrayList<Movie> list;
     private MovieAdapter listmovieAdapter;
+    private ProgressBar progressBar;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
 
         mApiService = UtilsApi.getAPIService();
         rvMovies = view.findViewById(R.id.rv_movie);
+        progressBar = view.findViewById(R.id.spin_kit);
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState != null) {
+            progressBar.setVisibility(View.INVISIBLE);
+            list = new ArrayList<>();
+            list = savedInstanceState.getParcelableArrayList(DATA_MOVIE_PARCELABLE);
+            rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
+            listmovieAdapter = new MovieAdapter(getContext(), list);
+            rvMovies.setAdapter(listmovieAdapter);
+        } else {
             list = new ArrayList<>();
             showRecyclerList();
-        } else {
-            list = savedInstanceState.getParcelableArrayList(DATA_MOVIE_PARCELABLE);
-            Toast.makeText(getContext(), ""+list, Toast.LENGTH_SHORT).show();
         }
 
         return view;
@@ -65,9 +73,13 @@ public class MovieFragment extends Fragment {
     }
 
     private void showRecyclerList() {
+        Sprite wanderingCubes = new WanderingCubes();
+        progressBar.setIndeterminateDrawable(wanderingCubes);
+        progressBar.setVisibility(View.VISIBLE);
         mApiService.getMovieRequest(api_key).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                progressBar.setVisibility(View.INVISIBLE);
                 try {
                     JSONObject jsonObject = new JSONObject(Objects.requireNonNull(response.body()).string());
                     JSONArray jsonArray = new JSONArray(jsonObject.getString("results"));
@@ -91,7 +103,7 @@ public class MovieFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), "Gagal", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Tidak Ada Internet", Toast.LENGTH_LONG).show();
 
             }
         });

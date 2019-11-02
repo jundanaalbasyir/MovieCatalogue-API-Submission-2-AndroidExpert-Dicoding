@@ -77,7 +77,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ListViewHold
             Intent intent = new Intent(mCtx, MovieDetailActivity.class);
             intent.putExtra(DATA_MOVIE_PARCELABLE, movie);
             mCtx.startActivity(intent);
-
         }
     }
 }
